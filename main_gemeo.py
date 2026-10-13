@@ -339,7 +339,7 @@ while (tempo_decorrido) < TEMPO_TOTAL_EMULACAO_SEGUNDOS:
 
 plt.ioff()
 print("Simulação Finalizada. Gerando gráficos de análise...")
-potencias = registros.potencia_eletrica_entregue_w[:registros.idx_sim]
+potencias = registros.potencias_gerada[:registros.idx_sim]
 energia_joules = np.sum(potencias) * PASSO_SIMULACAO_SEGUNDOS
 energia_wh = energia_joules / 3600.0
 
