@@ -24,10 +24,10 @@ TAU_ARMADURA = 0.03
 CAPACITANCIA_BARRAMENTO_FARADAY = 0.007
 INERCIA_GERADOR_KG_M2 = 2 * COEFICIENTE_ATRITO_GERADOR # 2 como tau mecanico se mostrou melhor que o ensaiado...
 # curva otima ajustada pelo main_gemeo_pid
-# pontos_v_inversor_hibrido = np.array([30.02, 57.23, 84.44, 111.64, 138.85, 166.06, 193.27, 220.48, 247.69, 274.9, 302.11, 329.32])
-# pontos_i_inversor_hibrido = np.array([0.17, 0.68, 2.96, 4.19, 4.31, 4.69, 5.78, 7.41, 9.37, 11.36, 13.38, 15.36])
+pontos_v_inversor_hibrido_opt = np.array([30.03, 37.89, 45.76, 53.62, 61.48, 69.34, 77.21, 85.07, 92.93, 100.79, 108.66, 116.52])
+pontos_i_inversor_hibrido_opt = np.array([0.0, 0.09, 0.19, 0.48, 0.71, 1.46, 2.5, 3.17, 3.41, 3.61, 3.87, 4.14])
 
-pontos_r_inversor_hibrido = pontos_v_inversor_hibrido/pontos_i_inversor_hibrido
+pontos_r_inversor_hibrido_opt = pontos_v_inversor_hibrido/pontos_i_inversor_hibrido
 # =============================================================================
 
 # apenas para isolar o comportamento do motor/gerador de bancada,

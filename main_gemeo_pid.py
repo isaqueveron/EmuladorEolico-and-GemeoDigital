@@ -48,11 +48,32 @@ class RegistroDeSimulacao:
         self.coeficientes_potencia_digitais = np.zeros(self.n_sim)
         self.erros_balanco_energetico_digital = np.zeros(self.n_sim)
 
+
+def calcular_velocidade_vento_degraus(tempo_decorrido_segundos):
+    if tempo_decorrido_segundos < 10.0: return 0.0
+    if tempo_decorrido_segundos < 20.0: return 1.0
+    if tempo_decorrido_segundos < 30.0: return 2.0
+    if tempo_decorrido_segundos < 40.0: return 3.0
+    if tempo_decorrido_segundos < 50.0: return 4.0
+    if tempo_decorrido_segundos < 60.0: return 5.0
+    if tempo_decorrido_segundos < 70.0: return 6.0
+    if tempo_decorrido_segundos < 80.0: return 7.0
+    if tempo_decorrido_segundos < 90.0: return 0.0
+    return 0.0
+
+
 def calcular_velocidade_vento_rampa(tempo):
+    # Rampa de subida (de 0 a 50 segundos)
+    # Sobe de 0.0 até 4.0
     if 0.0 <= tempo < 50.0:
         return (10.0 / 50.0) * tempo
+    
+    # Rampa de descida (de 50 a 100 segundos)
+    # Desce de 4.0 até 0.0
     elif 50.0 <= tempo < 100.0:
         return 10.0 - ((10.0 / 50.0) * (tempo - 50.0))
+    
+    # Fora do intervalo
     return 0.0
 
 
@@ -290,7 +311,20 @@ while (tempo_decorrido) < TEMPO_TOTAL_EMULACAO_SEGUNDOS:
 
     if (tempo_decorrido) >= PASSO_SIMULACAO_SEGUNDOS: 
         
-        velocidade_vento_atual_m_s = calcular_velocidade_vento_rampa(tempo_decorrido)
+        if PERFIL_VENTO == 'CONSTANTE':
+                if tempo_decorrido < 10.0:
+                    velocidade_vento_atual_m_s = vento_constante * (tempo_decorrido / 10.0)
+                else:
+                    velocidade_vento_atual_m_s = vento_constante   
+        if PERFIL_VENTO == 'ESCADA' : velocidade_vento_atual_m_s = calcular_velocidade_vento_degraus(tempo_decorrido)
+        if PERFIL_VENTO == 'RAMPA'  : velocidade_vento_atual_m_s = calcular_velocidade_vento_rampa(tempo_decorrido)
+        if PERFIL_VENTO == 'NATURAL': 
+            try: 
+                velocidade_vento_atual_m_s = VETOR_VENTO_M_S[index_vetor_vento]
+                index_vetor_vento += 1
+            except: 
+                velocidade_vento_atual_m_s = VETOR_VENTO_M_S[index_vetor_vento - 1]
+                index_vetor_vento = 100
     
         registros.ventos_simulacao_entrada[registros.idx_sim] = velocidade_vento_atual_m_s
         
@@ -365,7 +399,7 @@ while (tempo_decorrido) < TEMPO_TOTAL_EMULACAO_SEGUNDOS:
 
 plt.ioff()
 print("Simulação Finalizada. Gerando gráficos de análise...")
-potencias = registros.potencia_eletrica_entregue_w[:registros.idx_sim]
+potencias = registros.potencias_gerada[:registros.idx_sim]
 energia_joules = np.sum(potencias) * PASSO_SIMULACAO_SEGUNDOS
 energia_wh = energia_joules / 3600.0
 
