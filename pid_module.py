@@ -11,7 +11,7 @@ class PIDController:
 
     def compute(self, setpoint, measured_value, dt, active=True):
         if not active:
-            return 0.0 # Mantém a integral onde parou ou resete se preferir
+            return 0.0
 
         erro = setpoint - measured_value
         
@@ -21,12 +21,8 @@ class PIDController:
         # --- Termo Derivativo ---
         D = self.kd * (erro - self.erro_ant) / dt
         
-        # --- Cálculo da Saída Temporária (Sem a integral nova) ---
         saida_sem_I = P + (self.ki * self.erro_int) + D
         
-        # --- Lógica de ANTI-WINDUP (Conditional Integration) ---
-        # Só atualiza a integral se a saída total estiver dentro dos limites
-        # Isso simula o seu "if Tensao_min < Ea < Tensao_max"
         if self.out_min < saida_sem_I < self.out_max:
             self.erro_int += erro * dt
             
